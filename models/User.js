@@ -13,7 +13,7 @@ const UserSchema = new Schema({
     },
     roles: {
         type: [String],
-        default: ['DIAK']
+        default: ['TANAR']
     },
     questionnaires: {
         type: [Schema.Types.ObjectId],

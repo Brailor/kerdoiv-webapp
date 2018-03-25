@@ -10,7 +10,9 @@ class Form extends Component {
     };
 
     async componentDidMount() {
-        this.onAddQuestionClick();
+        const subjects = await Subject.getAll();
+        //Megnöveljük az indexet-et 1-el, hogy legyen inicializáláskor már egy kérdés
+        this.setState({ index: this.state.index + 1, subjects });
     }
 
     onInputChange(e) {
@@ -51,7 +53,7 @@ class Form extends Component {
 
     sendQuestionnaire() {
         const newObj = Object.assign({}, this.state);
-        const { title, description, index } = newObj;
+        const { title, description, index, subject } = newObj;
         delete newObj.description;
         delete newObj.index;
         delete newObj.title;
@@ -63,7 +65,6 @@ class Form extends Component {
             Fixálni kell!!!
          */
         const questions = [];
-        const keys = Object.keys(newObj);
         for (let qa in newObj) {
             const [key, questionIndex, valueIndex = -1] = qa.split('_');
 
@@ -82,6 +83,7 @@ class Form extends Component {
         const newQuestion = {
             title,
             description,
+            subject,
             questions: [...questions]
         };
 
@@ -95,6 +97,7 @@ class Form extends Component {
             .catch(console.error);
     }
     render() {
+        const { subjects } = this.state;
         return (
             <div>
                 <div className="subjects-landing-page">
@@ -141,7 +144,13 @@ class Form extends Component {
                                                     Válassz
                                                 </option>
 
-                                                <option>egy</option>
+                                                {subjects && subjects.length
+                                                    ? subjects.map((subject, index) => (
+                                                          <option key={index} value={subject.name}>
+                                                              {subject.displayName}
+                                                          </option>
+                                                      ))
+                                                    : ''}
                                             </select>
                                         </div>
                                     </div>

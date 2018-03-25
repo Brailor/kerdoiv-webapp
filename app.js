@@ -13,7 +13,6 @@ require('./service/passport');
 //A port amelyen futni fog a backend.
 const PORT = 8080;
 
-mongoose.Promise = global.Promise;
 //DB connection
 mongoose.connect('mongodb://127.0.0.1:27017/kerdoiv', err => {
     if (err) {
@@ -21,11 +20,12 @@ mongoose.connect('mongodb://127.0.0.1:27017/kerdoiv', err => {
         return;
     }
     console.log(`
-    ###--------------------------------------------------###
-    # Szerver sikeresen csatlakozott a MongoDB szerverhez  #
-    ###--------------------------------------------------###
-    `);
+###--------------------------------------------------###
+# Szerver sikeresen csatlakozott a MongoDB szerverhez  #
+###--------------------------------------------------###
+`);
 });
+mongoose.Promise = global.Promise;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -39,6 +39,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //Route-ok beimportálása.
+require('./routes/login')(app);
 require('./routes/index')(app);
 
 app.listen(PORT, () =>

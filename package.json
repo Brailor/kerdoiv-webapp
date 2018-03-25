@@ -7,8 +7,7 @@
         "start": "node app.js",
         "server": "nodemon --inspect app.js",
         "client": "npm run start --prefix client",
-        "dev":
-            "concurrently \"mongod --dbpath C:/data/db/\" \"npm run server\" \"npm run client\""
+        "dev": "concurrently \"mongod --dbpath C:/data/db/\" \"npm run server\" \"npm run client\""
     },
     "author": "",
     "license": "ISC",
@@ -17,6 +16,7 @@
         "cookie-session": "^2.0.0-beta.3",
         "cors": "^2.8.4",
         "express": "^4.16.2",
+        "lodash": "^4.17.5",
         "mongodb": "^3.0.2",
         "mongoose": "^5.0.5",
         "passport": "^0.4.0",
