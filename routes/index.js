@@ -36,7 +36,8 @@ module.exports = app => {
 
         if (subjectModel) {
             const questionnaires = await questionnaireService.findBySubject(subjectModel.id);
-            res.json(questionnaires);
+            //debugger;
+            res.json(await questionnaires);
         }
 
         res.status(404).json({ msg: 'Nincs találat!' });

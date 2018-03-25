@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Questionnaire } from '../middleware/index';
 import { Link } from 'react-router-dom';
+import Card from './Questionnaire/Card';
 import history from '../util/history';
+
 class QuestionnaireMaker extends Component {
     state = {
         qList: null
@@ -13,31 +15,7 @@ class QuestionnaireMaker extends Component {
     }
 
     renderQuestionnaireCard(questionnaire, index) {
-        return (
-            <div className="col-sm-3" key={index}>
-                <div className="card">
-                    <div className="card-header border-info">
-                        <b> Kérdőív címe:</b> {questionnaire.title}
-                    </div>
-                    <div className="card-body">
-                        <p>
-                            <b>Kérdőív leírása:</b> {questionnaire.description}
-                        </p>
-                        <p>
-                            <b>Készítő:</b> {questionnaire.madeBy}
-                        </p>
-                        <p>
-                            <b>Szavazatok száma:</b> {questionnaire.voteCount}
-                        </p>
-                    </div>
-                    <div className="card-footer border-success">
-                        <Link to={`/kerdoiv/${questionnaire._id}`} className="btn btn-success btn-block">
-                            Megtekintés
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        );
+        return <Card questionnaire={questionnaire} key={index} />;
     }
     render() {
         const { qList } = this.state;

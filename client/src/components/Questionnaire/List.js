@@ -1,19 +1,41 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Questionnaire } from '../../middleware/index';
+import Card from './Card';
 
 export class List extends Component {
-    state = {};
+    state = {
+        qList: null
+    };
+
+    renderQuestionnaireCard(questionnaire, index) {
+        return <Card questionnaire={questionnaire} key={index} />;
+    }
 
     async componentDidMount() {
         const { subject } = this.props.match.params || {};
         if (subject) {
             const result = await Questionnaire.getBySubject(subject);
-            console.log(result);
+            this.setState({ qList: result });
         }
     }
 
     render() {
-        return <div>kérdőiv lista</div>;
+        const { qList } = this.state;
+        if (!qList) {
+            return <div>Töltés...</div>;
+        }
+
+        return (
+            <div className="subjects-landing-page">
+                <div className="row">
+                    {qList.length !== 0 ? (
+                        qList.map(this.renderQuestionnaireCard)
+                    ) : (
+                        <div>Nincs ilyen típusú kérdőív!</div>
+                    )}
+                </div>
+            </div>
+        );
     }
 }
