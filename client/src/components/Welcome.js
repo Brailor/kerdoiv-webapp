@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 const Welcome = () => {
     return (
-        <div className="row no-gutters">
+        <div className="row align-items-center no-gutters">
             <div className="col-md-8 offset-md-2">
-                <div className="card">
+                <div className="jumbotron">
                     <h1>Üdv az oldalon!</h1>
                 </div>
             </div>

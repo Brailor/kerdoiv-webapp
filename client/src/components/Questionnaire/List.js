@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Questionnaire } from '../../middleware/index';
+import Loading from '../Loading';
 import Card from './Card';
 
 export class List extends Component {
@@ -23,7 +24,7 @@ export class List extends Component {
     render() {
         const { qList } = this.state;
         if (!qList) {
-            return <div>Töltés...</div>;
+            return <Loading />;
         }
 
         return (

@@ -28,7 +28,7 @@ class SubjectList extends Component {
         return (
             <div key={ind} key={ind} className={`col-sm-6 col-md-4`}>
                 <div className="card subject">
-                    <div>
+                    <div className="text-center">
                         <h2>{item.displayName}</h2>
                     </div>
 

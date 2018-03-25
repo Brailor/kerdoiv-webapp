@@ -39,7 +39,7 @@ body,
     justify-content: space-between;
 }
 
-.subjects-landing-page > .row > div {
+/* .subjects-landing-page > .row > div {
     border-color: #4635dc;
 }
 .subjects-landing-page > .row > div :nth-child(2n + 0) {
@@ -53,7 +53,7 @@ body,
 .subjects-landing-page > .row > div:nth-child(4n + 0) {
     border-color: #760359;
 }
-
+ */
 .subjects-landing-page {
     padding: 70px;
 }

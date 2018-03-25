@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Questionnaire } from '../middleware/index';
 import { Link } from 'react-router-dom';
 import Card from './Questionnaire/Card';
+import Loading from './Loading';
 import history from '../util/history';
 
 class QuestionnaireMaker extends Component {
@@ -21,11 +22,7 @@ class QuestionnaireMaker extends Component {
         const { qList } = this.state;
 
         if (!qList) {
-            return (
-                <div className="subjects-landing-page">
-                    <p>Kérdőívek töltése folyamatban...</p>
-                </div>
-            );
+            return <Loading />;
         }
         return (
             <div className="subjects-landing-page">
