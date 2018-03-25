@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Question from './Question';
-import { Questionnaire } from '../../middleware/index';
+import { Link } from 'react-router-dom';
+import { Questionnaire, Subject } from '../../middleware/index';
 import history from '../../util/history';
 
 class Form extends Component {
@@ -8,12 +9,12 @@ class Form extends Component {
         index: 0
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         this.onAddQuestionClick();
     }
 
     onInputChange(e) {
-        this.setState({ [e.target.name]: e.target.value });
+        this.setState({ [e.target.name]: e.target.value }, () => console.log(this.state));
     }
 
     deleteQuestion(itemIndex) {
@@ -68,14 +69,10 @@ class Form extends Component {
 
             let x = questions[questionIndex] || { answerOpts: [] };
 
-            if (key === 'questionTitle')
-                x.title = newObj[`${key}_${questionIndex}`];
-            else if (key === 'questionType')
-                x.qType = newObj[`${key}_${questionIndex}`];
+            if (key === 'questionTitle') x.title = newObj[`${key}_${questionIndex}`];
+            else if (key === 'questionType') x.qType = newObj[`${key}_${questionIndex}`];
             else if (key === 'value' && valueIndex >= 0) {
-                x.answerOpts.push(
-                    newObj[`${key}_${questionIndex}_${valueIndex}`]
-                );
+                x.answerOpts.push(newObj[`${key}_${questionIndex}_${valueIndex}`]);
             } else {
                 x.answerOpts.push(newObj[`${key}_${questionIndex}`]);
             }
@@ -105,25 +102,48 @@ class Form extends Component {
                         <div className="col-sm-8 offset-sm-2">
                             <div className="card">
                                 <div
-                                    className="card-header text-center row"
+                                    className="card-header text-center"
                                     style={{
                                         marginLeft: '0px',
                                         marginRight: '0px'
                                     }}
                                 >
-                                    <div className="col-sm-2 offset-sm-1">
-                                        <label>Kérdőív címe: </label>
+                                    <div className="row">
+                                        <div className="col-sm-2 offset-sm-1">
+                                            <b>
+                                                <label>Kérdőív címe: </label>
+                                            </b>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <input
+                                                className="form-control"
+                                                type="text"
+                                                name="title"
+                                                required
+                                                placeholder="Add meg a kérdőív címét"
+                                                onChange={e => this.onInputChange(e)}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="col-sm-6">
-                                        <input
-                                            className="form-control"
-                                            type="text"
-                                            name="title"
-                                            required
-                                            onChange={e =>
-                                                this.onInputChange(e)
-                                            }
-                                        />
+                                    <div className="row mt-1">
+                                        <div className="col-sm-2 offset-sm-1">
+                                            <b>
+                                                <label>Tantárgy: </label>
+                                            </b>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <select
+                                                className="form-control"
+                                                name="subject"
+                                                onChange={e => this.onInputChange(e)}
+                                            >
+                                                <option value="" disabled selected>
+                                                    Válassz
+                                                </option>
+
+                                                <option>egy</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div
@@ -135,7 +155,9 @@ class Form extends Component {
                                 >
                                     <div className="col-sm-3">
                                         <label>
-                                            <h4>Kérdőív leírása:</h4>
+                                            <b>
+                                                <h4>Kérdőív leírása:</h4>
+                                            </b>
                                         </label>
                                     </div>
                                     <div className="col-sm-9">
@@ -144,17 +166,13 @@ class Form extends Component {
                                             placeholder="Add meg a kérdőív leírását"
                                             name="description"
                                             required
-                                            onChange={e =>
-                                                this.onInputChange(e)
-                                            }
+                                            onChange={e => this.onInputChange(e)}
                                         />
                                     </div>
                                     {this.renderQuestions()}
                                     <div className="question-input-card">
                                         <button
-                                            onClick={() =>
-                                                this.onAddQuestionClick()
-                                            }
+                                            onClick={() => this.onAddQuestionClick()}
                                             className="btn btn-warning btn-block"
                                         >
                                             + Új kérdés hozzáadás
@@ -166,8 +184,11 @@ class Form extends Component {
                                         onClick={() => this.sendQuestionnaire()}
                                         className="btn btn-success btn-block"
                                     >
-                                        Elküldés
+                                        <i className="fas fa-save" /> Elküldés
                                     </button>
+                                    <Link to={`/kerdoiv-keszites`} className="btn btn-warning btn-block">
+                                        <i className="fas fa-arrow-alt-circle-left" />Vissza
+                                    </Link>
                                 </div>
                             </div>
                         </div>

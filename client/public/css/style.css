@@ -34,7 +34,26 @@ body,
 .subject {
     padding: 10px;
     margin: 10px 0 10px 0;
+    height: 20rem;
+    display: flex;
+    justify-content: space-between;
 }
+
+.subjects-landing-page > .row > div {
+    border-color: #4635dc;
+}
+.subjects-landing-page > .row > div :nth-child(2n + 0) {
+    border-color: #dc3545;
+}
+
+.subjects-landing-page > .row > div :nth-child(3n + 0) {
+    border-color: #599123;
+}
+
+.subjects-landing-page > .row > div:nth-child(4n + 0) {
+    border-color: #760359;
+}
+
 .subjects-landing-page {
     padding: 70px;
 }

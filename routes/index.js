@@ -25,20 +25,27 @@ module.exports = app => {
     });
 
     app.get('/api/questionnaires', authMW, async (req, res) => {
-        const questionnaires = await questionnaireService.findAllByUserId(
-            req.user._id
-        );
+        const questionnaires = await questionnaireService.findAllByUserId(req.user._id);
         console.log('questionnaires:', questionnaires);
 
         res.json({ questionnaires });
     });
 
+    app.get('/api/questionnaire', authMW, async (req, res) => {
+        const { subject } = req.query;
+        const [subjectModel] = await subjectService.findBySubject(subject);
+
+        if (subjectModel) {
+            const questionnaires = await questionnaireService.findBySubject(subjectModel.id);
+            res.json(questionnaires);
+        }
+
+        res.status(404).json({ msg: 'Nincs találat!' });
+    });
+
     app.post('/api/create-questionnaire', authMW, async (req, res) => {
         // TODO: Validáció kell ide !!!!
-        const questionnaire = questionnaireService.createQuestionnaire(
-            req.body.body,
-            req.user._id
-        );
+        const questionnaire = questionnaireService.createQuestionnaire(req.body.body, req.user._id);
 
         const newQuestionnaire = await questionnaire.save();
         res.status(200).json(newQuestionnaire);

@@ -6,10 +6,10 @@ import Navbar from './Navbar';
 import Login from './Login';
 import Questionnaire from './Questionnaire';
 import SubjectList from './SubjectList';
-import QuestionnaireMakerMain from './QuestionnaireMakerMain';
 import QuestionnaireMaker from './QuestionnaireMaker';
 import Form from './Questionnaire/Form';
 import Welcome from './Welcome';
+import { List as QuestionnaireList } from './Questionnaire/List';
 
 class App extends Component {
     componentDidMount() {
@@ -26,23 +26,16 @@ class App extends Component {
                             <Route path="/login" component={Login} />
 
                             <Route path="/tema-lista" component={SubjectList} />
-                            <Route
-                                path="/kerdoiv-keszites"
-                                component={QuestionnaireMaker}
-                            />
-                            <Route
-                                path="/kerdoiv/:id"
-                                component={Questionnaire}
-                            />
+                            <Route path="/kerdoiv-lista/:subject" component={QuestionnaireList} />
+                            <Route path="/kerdoiv-keszites" component={QuestionnaireMaker} />
+                            <Route path="/kerdoiv/:id" component={Questionnaire} />
                             <Route path="/kerdoiv-form" component={Form} />
                             <Route
                                 render={() => (
                                     <div className="landing-page">
                                         <div className="card card-404">
                                             <h1>404</h1>
-                                            <p>
-                                                A keresett oldal nem található.
-                                            </p>
+                                            <p>A keresett oldal nem található.</p>
                                         </div>
                                     </div>
                                 )}

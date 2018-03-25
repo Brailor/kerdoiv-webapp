@@ -37,6 +37,7 @@ export const Login = {
 export const Questionnaire = {
     getAll: () => API.get('questionnaires'),
     getById: id => API.get('questionnaire', { id }),
+    getBySubject: subject => API.get('questionnaire', { subject }),
     create: questionnaire => API.post('create-questionnaire', questionnaire),
     delete: id => API.delete('questionnaire', { id })
 };

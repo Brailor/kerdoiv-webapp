@@ -24,10 +24,19 @@ module.exports = {
         try {
             questionList = await Questionnaire.find({ madeBy: userId }).exec();
         } catch (err) {
-            console.error(
-                'Hiba a questionList lekérdezése során func: findAllByUserId',
-                err
-            );
+            console.error('Hiba a questionList lekérdezése során func: findAllByUserId', err);
+        }
+
+        return questionList;
+    },
+
+    async findBySubject(subject) {
+        let questionList;
+
+        try {
+            questionList = await Questionnaire.find({ subject: subject }).exec();
+        } catch (err) {
+            console.error('Hiba a questionList lekérdezése során func: findBySubject', err);
         }
 
         return questionList;

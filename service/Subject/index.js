@@ -22,12 +22,20 @@ module.exports = {
         try {
             subjects = await Subject.find({}).exec();
         } catch (err) {
-            console.error(
-                'Hiba a subjectList lekérdezése során func: findAll',
-                err
-            );
+            console.error('Hiba a subjectList lekérdezése során func: findAll', err);
         }
 
         return subjects;
+    },
+    async findBySubject(subject) {
+        let result;
+
+        try {
+            result = await Subject.find({ name: subject }).exec();
+        } catch (err) {
+            console.error('Hiba a questionList lekérdezése során func: findBySubject', err);
+        }
+
+        return result;
     }
 };

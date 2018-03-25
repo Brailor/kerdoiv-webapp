@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import Questionnaire from './Questionnaire';
+import { Link } from 'react-router-dom';
 import { Subject } from '../middleware/index';
 import { setSubjects } from '../actions/actions';
 import { connect } from 'react-redux';
+import history from '../util/history';
 
 class SubjectList extends Component {
-    constructor() {
-        super();
-        this.state = {
-            open: null
-        };
-    }
-
     componentDidMount() {
         Subject.getAll()
             .then(this.props.setSubjects)
@@ -25,22 +20,19 @@ class SubjectList extends Component {
         }
         this.setState({ open: ind });
     }
+
+    onClick(e) {
+        history.push(`/kerdoiv-lista/${e.target.dataset.subject}`);
+    }
     getItem(item, ind) {
         return (
-            <div
-                key={ind}
-                onClick={e => this.toggleItem(ind)}
-                key={ind}
-                className={`card subject ${
-                    this.state.open === ind ? 'open' : ''
-                }`}
-            >
-                <div>
-                    <span>{item.displayName}</span>
-                    <button
-                        className="btn"
-                        style={{ float: 'right', cursor: 'pointer' }}
-                    >
+            <div key={ind} key={ind} className={`col-sm-6 col-md-4`}>
+                <div className="card subject">
+                    <div>
+                        <h2>{item.displayName}</h2>
+                    </div>
+
+                    <button data-subject={item.name} onClick={e => this.onClick(e)} className="btn btn-success">
                         Tovább
                     </button>
                 </div>
@@ -50,11 +42,14 @@ class SubjectList extends Component {
     render() {
         return (
             <div className="subjects-landing-page">
-                {this.props.subjects
-                    ? this.props.subjects.map((item, ind) =>
-                          this.getItem(item, ind)
-                      )
-                    : ''}
+                <div>
+                    <p className="alert alert-primary text-center">
+                        <span>Válassz témát!</span>
+                    </p>
+                </div>
+                <div className="row">
+                    {this.props.subjects ? this.props.subjects.map((item, ind) => this.getItem(item, ind)) : ''}
+                </div>
             </div>
         );
     }
