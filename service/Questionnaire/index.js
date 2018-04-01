@@ -49,7 +49,10 @@ module.exports = {
     let questionList;
 
     try {
-      questionList = await Questionnaire.find({ subject: subject }).exec();
+      questionList = await Questionnaire.find({ subject: subject })
+        .populate('subject')
+        .populate('madeBy')
+        .exec();
     } catch (err) {
       console.error('Hiba a questionList lekérdezése során func: findBySubject', err);
     }
