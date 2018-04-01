@@ -4,75 +4,87 @@ const subjectService = require('../service/Subject/index');
 const authMW = require('../middleware/authMW');
 
 module.exports = app => {
-    app.get('/api/subjects', authMW, async (req, res) => {
-        let subjects = await subjectService.findAll();
+  app.get('/api/subjects', authMW, async (req, res) => {
+    let subjects = await subjectService.findAll();
 
-        res.send(subjects);
+    res.send(subjects);
+  });
+
+  app.post('/api/create-subject', authMW, async (req, res) => {
+    const subject = await subjectService.createSubject({
+      name: req.body.subjectName,
+      displayName: req.body.displayName
     });
 
-    app.post('/api/create-subject', authMW, async (req, res) => {
-        const subject = await subjectService.createSubject({
-            name: req.body.subjectName,
-            displayName: req.body.displayName
-        });
+    if (subject) {
+      const newSubject = await subject.save();
+      res.status(200).json(newSubject);
+    }
+    res.status(404).json({ message: 'Nem sikerült új témát hozzáadni!' });
+  });
 
-        if (subject) {
-            const newSubject = await subject.save();
-            res.status(200).json(newSubject);
-        }
-        res.status(404).json({ message: 'Nem sikerült új témát hozzáadni!' });
-    });
+  app.get('/api/questionnaires', authMW, async (req, res) => {
+    const questionnaires = await questionnaireService.findAllByUserId(req.user._id);
+    console.log('questionnaires:', questionnaires);
 
-    app.get('/api/questionnaires', authMW, async (req, res) => {
-        const questionnaires = await questionnaireService.findAllByUserId(req.user._id);
-        console.log('questionnaires:', questionnaires);
+    res.json({ questionnaires });
+  });
 
-        res.json({ questionnaires });
-    });
+  app.get('/api/questionnaire', authMW, async (req, res) => {
+    console.log(req.query);
+    if ('subject' in req.query) {
+      const [subjectModel] = await subjectService.findBySubject(req.query.subject);
 
-    app.get('/api/questionnaire', authMW, async (req, res) => {
-        const { subject } = req.query;
-        const [subjectModel] = await subjectService.findBySubject(subject);
+      if (subjectModel) {
+        const questionnaires = await questionnaireService.findBySubject(subjectModel.id);
+        res.json(questionnaires);
 
-        if (subjectModel) {
-            const questionnaires = await questionnaireService.findBySubject(subjectModel.id);
-            //debugger;
-            res.json(await questionnaires);
-        }
+        return;
+      }
+    }
 
-        res.status(404).json({ msg: 'Nincs találat!' });
-    });
+    if ('id' in req.query) {
+      const questionnaire = await questionnaireService.findById(req.query.id);
 
-    app.post('/api/create-questionnaire', authMW, async (req, res) => {
-        // TODO: Validáció kell ide !!!!
+      if (questionnaire) {
+        res.json(questionnaire);
+        return;
+      }
+    }
 
-        const { subject } = req.body.body;
+    res.status(404).json({ msg: 'Nincs találat!' });
+  });
 
-        const questionnaire = questionnaireService.createQuestionnaire(req.body.body, req.user._id);
-        if (subject) {
-            const [subjectModel] = await subjectService.findBySubject(subject);
-            if (subjectModel) questionnaire.subject = subjectModel.id;
-        }
+  app.post('/api/create-questionnaire', authMW, async (req, res) => {
+    // TODO: Validáció kell ide !!!!
 
-        const newQuestionnaire = await questionnaire.save();
-        res.status(200).json(newQuestionnaire);
-    });
+    const { subject } = req.body.body;
 
-    app.get('/api/logout', authMW, (req, res) => {
-        req.logout();
-        res.redirect('/');
-    });
+    const questionnaire = questionnaireService.createQuestionnaire(req.body.body, req.user._id);
+    if (subject) {
+      const [subjectModel] = await subjectService.findBySubject(subject);
+      if (subjectModel) questionnaire.subject = subjectModel.id;
+    }
 
-    app.get('/api/current-user', authMW, (req, res) => {
-        console.log('user', req.user._id);
-        res.send(req.user._id);
-    });
+    const newQuestionnaire = await questionnaire.save();
+    res.status(200).json(newQuestionnaire);
+  });
 
-    app.post('/api/register', async (req, res) => {
-        const { username, password } = req.body;
-        const user = userService.createUser({ username, password });
+  app.get('/api/logout', authMW, (req, res) => {
+    req.logout();
+    res.redirect('/');
+  });
 
-        const newUser = await user.save();
-        res.status(200).json(newUser);
-    });
+  app.get('/api/current-user', authMW, (req, res) => {
+    console.log('user', req.user._id);
+    res.send(req.user._id);
+  });
+
+  app.post('/api/register', async (req, res) => {
+    const { username, password } = req.body;
+    const user = userService.createUser({ username, password });
+
+    const newUser = await user.save();
+    res.status(200).json(newUser);
+  });
 };

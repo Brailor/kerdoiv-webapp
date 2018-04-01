@@ -7,7 +7,7 @@
         "start": "node app.js",
         "server": "nodemon --inspect app.js",
         "client": "npm run start --prefix client",
-        "dev": "concurrently \"mongod --dbpath C:/data/db/\" \"npm run server\" \"npm run client\""
+        "dev": "concurrently \"mongod\" \"npm run server\" \"npm run client\""
     },
     "author": "",
     "license": "ISC",
