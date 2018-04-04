@@ -7,8 +7,24 @@ class Questionnaire extends Component {
     onChangeInput: propTypes.func.isRequired
   };
 
-  changeInput = event => {
-    this.setState({ [event.target.name]: event.target.value }, () => console.log(this.state));
+  changeInput = (event, qType) => {
+    //Todo ha a checkbox fieldben bepipálunk valamit és utána kivesszük a pipát a state-ben bentmarad az előző érték
+    if (qType === 'checkbox') {
+      if (!this.state[event.target.name]) {
+        let newState = {
+          [event.target.name]: [event.target.value]
+        };
+        this.setState({ ...this.state, ...newState }, () => console.log(this.state));
+        return;
+      }
+      let newCheckboxArr = Object.assign([], this.state[event.target.name]);
+      if (!this.state[event.target.name].find(item => item === event.target.value)) {
+        newCheckboxArr.push(event.target.value);
+        this.setState({ [event.target.name]: newCheckboxArr }, () => console.log(this.state));
+      }
+    } else {
+      this.setState({ [event.target.name]: event.target.value }, () => console.log(this.state));
+    }
   };
 
   getChildContext() {
@@ -30,12 +46,17 @@ class Questionnaire extends Component {
     }
   }
 
+  onSubmit(e) {
+    e.preventDefault();
+    console.log(e.target);
+  }
+
   render() {
     const { questionnaire } = this.state;
     if (!questionnaire) {
       return (
         <div>
-          <h2>Loading....</h2>
+          <h2>Töltés....</h2>
         </div>
       );
     }
@@ -49,7 +70,6 @@ class Questionnaire extends Component {
                 <div className="col-sm-3">
                   <h4>Kérdőív leírása:</h4>
                 </div>
-
                 <div className="col-sm-9">
                   <p>{questionnaire.description}</p>
                 </div>
@@ -78,38 +98,31 @@ class Question extends Component {
     onChangeInput: propTypes.func.isRequired
   };
   render() {
-    const { children } = this.props;
+    const { children, index } = this.props;
     const { onChangeInput } = this.context;
     const { qType } = children;
-    let questionType;
-    //TODO: qType alapján való question renderelés és state mentés a legfőlsőbb componensben
-    switch (qType) {
-      case 'radio':
-        questionType = <RadioInput />;
-        break;
-      case 'checkbox':
-        questionType = <div>Chekcbox</div>;
-        break;
-      case 'text':
-        questionType = <div>Text</div>;
-        break;
-      case 'textfield':
-        questionType = <div>TextField</div>;
-        break;
-      default:
-        break;
+    let questionComp;
+
+    if (qType === 'textfield') {
+      questionComp = <textarea name={`${index}`} onChange={e => onChangeInput(e, qType)} rows="4" cols="50" />;
+    } else if (qType === 'text') {
+      questionComp = <input name={`${index}`} type="text" onChange={e => onChangeInput(e, qType)} />;
+    } else {
+      questionComp = children.answerOpts.map((answer, ind) => (
+        <div>
+          <label>{answer}</label>
+          <input key={ind} name={`${index}`} type={qType} onChange={e => onChangeInput(e, qType)} value={answer} />
+        </div>
+      ));
     }
     return (
       <div className="question-input-card">
-        {`${this.props.index + 1}. `}
+        {`${index + 1}. `}
         {children.title}
-        {questionType}
+        {questionComp}
       </div>
     );
   }
 }
 
-const RadioInput = props => {
-  return <div>Radio </div>;
-};
 export default Questionnaire;

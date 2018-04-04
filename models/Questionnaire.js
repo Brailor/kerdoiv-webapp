@@ -17,6 +17,7 @@ const QuestionnaireSchema = new Schema({
   },
   description: String,
   voteCount: Number,
+  voteRange: Number,
   questions: [
     {
       title: {
