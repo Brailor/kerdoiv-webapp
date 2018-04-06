@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import { Questionnaire as QuestionnaireSerive } from '../middleware/index';
+import Loading from './Loading';
 import * as propTypes from 'prop-types';
 
 class Questionnaire extends Component {
   static childContextTypes = {
     onChangeInput: propTypes.func.isRequired
+  };
+
+  state = {
+    questionnaire: null
   };
 
   changeInput = (event, qType) => {
@@ -33,10 +38,6 @@ class Questionnaire extends Component {
     };
   }
 
-  state = {
-    questionnaire: null
-  };
-
   async componentDidMount() {
     const { id } = this.props.match.params;
 
@@ -46,9 +47,18 @@ class Questionnaire extends Component {
     }
   }
 
-  onSubmit(e) {
-    e.preventDefault();
-    console.log(e.target);
+  onClickSubmit() {
+    if (!this.state) return;
+    const keys = Object.keys(this.state);
+    const answers = keys.filter(stateKey => stateKey !== 'questionnaire').map(value => this.state[value]);
+    const jsonData = {
+      answers,
+      questionnaireID: this.state.questionnaire._id
+    };
+
+    QuestionnaireSerive.submit(jsonData);
+
+    console.log(jsonData);
   }
 
   render() {
@@ -56,7 +66,7 @@ class Questionnaire extends Component {
     if (!questionnaire) {
       return (
         <div>
-          <h2>Töltés....</h2>
+          <Loading />
         </div>
       );
     }
@@ -79,9 +89,8 @@ class Questionnaire extends Component {
                   {question}
                 </Question>
               ))}
-
               <div className="card-footer text-center">
-                <button onClick={() => console.log('click')} className="btn btn-success btn-block">
+                <button onClick={() => this.onClickSubmit()} className="btn btn-success btn-block">
                   Elküldés
                 </button>
               </div>
@@ -109,14 +118,14 @@ class Question extends Component {
       questionComp = <input name={`${index}`} type="text" onChange={e => onChangeInput(e, qType)} />;
     } else {
       questionComp = children.answerOpts.map((answer, ind) => (
-        <div>
+        <div key={ind}>
           <label>{answer}</label>
-          <input key={ind} name={`${index}`} type={qType} onChange={e => onChangeInput(e, qType)} value={answer} />
+          <input name={`${index}`} type={qType} onChange={e => onChangeInput(e, qType)} value={answer} />
         </div>
       ));
     }
     return (
-      <div className="question-input-card">
+      <div className="question-block card-block">
         {`${index + 1}. `}
         {children.title}
         {questionComp}

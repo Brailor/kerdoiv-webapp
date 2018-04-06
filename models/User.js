@@ -19,10 +19,12 @@ const UserSchema = new Schema({
     type: [Schema.Types.ObjectId],
     ref: 'Questionnaire'
   },
-  completedQuestionnaires: {
-    type: [Schema.Types.ObjectId],
-    ref: 'Questionnaire'
-  }
+  completedQuestionnaires: [
+    {
+      referenceID: String,
+      answers: []
+    }
+  ]
 });
 
 module.exports = mongoose.model('User', UserSchema);

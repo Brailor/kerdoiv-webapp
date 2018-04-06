@@ -7,7 +7,7 @@ module.exports = app => {
   app.get('/api/subjects', authMW, async (req, res) => {
     let subjects = await subjectService.findAll();
 
-    res.send(subjects);
+    res.json(subjects);
   });
 
   app.post('/api/create-subject', authMW, async (req, res) => {
@@ -31,7 +31,6 @@ module.exports = app => {
   });
 
   app.get('/api/questionnaire', authMW, async (req, res) => {
-    console.log(req.query);
     if ('subject' in req.query) {
       const [subjectModel] = await subjectService.findBySubject(req.query.subject);
 
@@ -70,13 +69,35 @@ module.exports = app => {
     res.status(200).json(newQuestionnaire);
   });
 
+  app.post('/api/submit-questionnaire', authMW, async (req, res) => {
+    const { questionnaireID, answers } = req.body.body;
+    const { user } = req;
+
+    const questionnaire = await questionnaireService.findById(questionnaireID);
+
+    const jsonData = {
+      referenceID: questionnaireID,
+      answers
+    };
+
+    const match = user.completedQuestionnaires.find(questionnaire => questionnaire.referenceID === questionnaireID);
+
+    if (match) {
+      res.json({ msg: 'Egszer már kitöltötted ezt a kérdőívet' });
+      return;
+    }
+    user.completedQuestionnaires.push(jsonData);
+
+    const updatedUser = await user.save();
+    res.json(updatedUser);
+  });
+
   app.get('/api/logout', authMW, (req, res) => {
     req.logout();
     res.redirect('/');
   });
 
   app.get('/api/current-user', authMW, (req, res) => {
-    console.log('user', req.user._id);
     res.send(req.user._id);
   });
 
