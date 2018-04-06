@@ -47,6 +47,7 @@ module.exports = app => {
 
       if (questionnaire) {
         res.json(questionnaire);
+        /*  */
         return;
       }
     }
