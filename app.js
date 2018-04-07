@@ -5,6 +5,7 @@ const cookieSession = require('cookie-session');
 const passport = require('passport');
 const app = express();
 
+// Modell-ek beimportálása, inicializálása
 require('./models/User');
 require('./models/Questionnaire');
 require('./models/Subject');
@@ -15,14 +16,14 @@ const PORT = 8080;
 
 //DB connection
 mongoose.connect('mongodb://127.0.0.1:27017/kerdoiv', err => {
-    if (err) {
-        console.log(`Valami hiba törént a MongoDB szerver csatlakozása közben: ${err}`);
-        return;
-    }
-    console.log(`
-###--------------------------------------------------###
-# Szerver sikeresen csatlakozott a MongoDB szerverhez  #
-###--------------------------------------------------###
+  if (err) {
+    console.log(`Valami hiba törént a MongoDB szerver csatlakozása közben: ${err}`);
+    return;
+  }
+  console.log(`
+###-----------------------------------------------------------###
+# Backend szerver sikeresen csatlakozott a MongoDB szerverhez  #
+###----------------------------------------------------------###
 `);
 });
 mongoose.Promise = global.Promise;
@@ -30,10 +31,10 @@ mongoose.Promise = global.Promise;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(
-    cookieSession({
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        keys: ['verysecretkey']
-    })
+  cookieSession({
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    keys: ['verysecretkey']
+  })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -43,9 +44,9 @@ require('./routes/login')(app);
 require('./routes/index')(app);
 
 app.listen(PORT, () =>
-    console.log(`
-###----------------------------------###
-#App elindult a <localhost:${PORT}>-on.#
-###---------------------------------.###
+  console.log(`
+###-----------------------------------------###
+# Backend elindult a <localhost:${PORT}>-on  #
+###----------------------------------------###
 `)
 );

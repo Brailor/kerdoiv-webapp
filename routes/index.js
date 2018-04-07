@@ -10,7 +10,7 @@ module.exports = app => {
     res.json(subjects);
   });
 
-  app.post('/api/create-subject', authMW, async (req, res) => {
+  app.post('/api/create-subject', async (req, res) => {
     const subject = await subjectService.createSubject({
       name: req.body.subjectName,
       displayName: req.body.displayName
@@ -25,7 +25,6 @@ module.exports = app => {
 
   app.get('/api/questionnaires', authMW, async (req, res) => {
     const questionnaires = await questionnaireService.findAllByUserId(req.user._id);
-    console.log('questionnaires:', questionnaires);
 
     res.json({ questionnaires });
   });
@@ -47,7 +46,6 @@ module.exports = app => {
 
       if (questionnaire) {
         res.json(questionnaire);
-        /*  */
         return;
       }
     }
@@ -59,8 +57,9 @@ module.exports = app => {
     // TODO: Validáció kell ide !!!!
 
     const { subject } = req.body.body;
+    debugger;
 
-    const questionnaire = questionnaireService.createQuestionnaire(req.body.body, req.user._id);
+    const questionnaire = await questionnaireService.createQuestionnaire(req.body.body, req.user.get('id'));
     if (subject) {
       const [subjectModel] = await subjectService.findBySubject(subject);
       if (subjectModel) questionnaire.subject = subjectModel.id;
@@ -84,13 +83,13 @@ module.exports = app => {
     const match = user.completedQuestionnaires.find(questionnaire => questionnaire.referenceID === questionnaireID);
 
     if (match) {
-      res.json({ msg: 'Egszer már kitöltötted ezt a kérdőívet' });
+      res.json({ msg: 'Egyszer már kitöltötted ezt a kérdőívet', success: false });
       return;
     }
     user.completedQuestionnaires.push(jsonData);
 
     const updatedUser = await user.save();
-    res.json(updatedUser);
+    res.status(200).json({ updatedUser, success: true });
   });
 
   app.get('/api/logout', authMW, (req, res) => {

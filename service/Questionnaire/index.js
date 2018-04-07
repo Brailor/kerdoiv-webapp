@@ -8,14 +8,14 @@ module.exports = {
         return              -> questionnaire model which can be saved to the database
      */
   createQuestionnaire(questionnaire, userId) {
-    const questionnaire = new Questionnaire({
+    const newQuestionnaire = new Questionnaire({
       madeBy: userId,
       title: questionnaire.title,
       description: questionnaire.description,
       voteCount: questionnaire.voteCount || 0,
       questions: [...questionnaire.questions]
     });
-    return questionnaire;
+    return newQuestionnaire;
   },
 
   async findById(id) {

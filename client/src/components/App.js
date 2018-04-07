@@ -12,42 +12,42 @@ import Welcome from './Welcome';
 import { List as QuestionnaireList } from './Questionnaire/List';
 
 class App extends Component {
-    componentDidMount() {
-        this.props.fetchUser();
-    }
-    render() {
-        return (
-            <Router>
-                <div>
-                    <Navbar />
-                    <div className="container-fluid">
-                        <Switch>
-                            <Route exact path="/" component={Welcome} />
-                            <Route path="/login" component={Login} />
+  componentDidMount() {
+    this.props.fetchUser();
+  }
+  render() {
+    return (
+      <Router>
+        <div>
+          <Navbar />
+          <div className="container-fluid">
+            <Switch>
+              <Route exact path="/" component={Welcome} />
+              <Route path="/login" component={Login} />
 
-                            <Route path="/tema-lista" component={SubjectList} />
-                            <Route path="/kerdoiv-lista/:subject" component={QuestionnaireList} />
-                            <Route path="/kerdoiv-keszites" component={QuestionnaireMaker} />
-                            <Route path="/kerdoiv/:id" component={Questionnaire} />
-                            <Route path="/kerdoiv-form" component={Form} />
-                            <Route
-                                render={() => (
-                                    <div className="landing-page">
-                                        <div className="card card-404">
-                                            <h1>404</h1>
-                                            <p>A keresett oldal nem található.</p>
-                                        </div>
-                                    </div>
-                                )}
-                            />
-                        </Switch>
+              <Route path="/tema-lista" component={SubjectList} />
+              <Route path="/kerdoiv-lista/:subject" component={QuestionnaireList} />
+              <Route path="/kerdoiv-keszites" component={QuestionnaireMaker} />
+              <Route path="/kerdoiv/:id" component={props => <Questionnaire backpage="tema-lista" {...props} />} />
+              <Route path="/kerdoiv-form" component={Form} />
+              <Route
+                render={() => (
+                  <div className="landing-page">
+                    <div className="card card-404">
+                      <h1>404</h1>
+                      <p>A keresett oldal nem található.</p>
                     </div>
-                    <footer className="footer">
-                        <div className="mui-container-fluid" />
-                    </footer>
-                </div>
-            </Router>
-        );
-    }
+                  </div>
+                )}
+              />
+            </Switch>
+          </div>
+          <footer className="footer">
+            <div className="mui-container-fluid" />
+          </footer>
+        </div>
+      </Router>
+    );
+  }
 }
 export default connect(null, actions)(App);

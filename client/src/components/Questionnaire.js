@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Questionnaire as QuestionnaireSerive } from '../middleware/index';
+import { Link } from 'react-router-dom';
 import Loading from './Loading';
+import history from '../util/history';
 import * as propTypes from 'prop-types';
+import Button from './Button/Button';
 
 class Questionnaire extends Component {
   static childContextTypes = {
@@ -56,9 +59,15 @@ class Questionnaire extends Component {
       questionnaireID: this.state.questionnaire._id
     };
 
-    QuestionnaireSerive.submit(jsonData);
-
-    console.log(jsonData);
+    QuestionnaireSerive.submit(jsonData)
+      .then(res => {
+        if (res.success) {
+          history.push('/tema-lista');
+        } else {
+          alert(res.msg);
+        }
+      })
+      .catch(e => console.log('valami hiba volt:', e));
   }
 
   render() {
@@ -97,6 +106,12 @@ class Questionnaire extends Component {
             </div>
           </div>
         </div>
+        <Button>
+          <Link to={'/' + this.props.backpage} className={'btn btn-warning'}>
+            <i className="fas fa-arrow-left" />
+            Vissza
+          </Link>
+        </Button>
       </div>
     );
   }
@@ -112,15 +127,32 @@ class Question extends Component {
     const { qType } = children;
     let questionComp;
 
-    if (qType === 'textfield') {
-      questionComp = <textarea name={`${index}`} onChange={e => onChangeInput(e, qType)} rows="4" cols="50" />;
+    if (qType === 'textarea') {
+      questionComp = (
+        <textarea
+          placeholder="Fejtsd ki a választ erre a kérdésre"
+          className="form-control"
+          name={`${index}`}
+          onChange={e => onChangeInput(e, qType)}
+          rows="4"
+          cols="50"
+        />
+      );
     } else if (qType === 'text') {
-      questionComp = <input name={`${index}`} type="text" onChange={e => onChangeInput(e, qType)} />;
+      questionComp = (
+        <input
+          placeholder="Fejtsd ki a választ erre a kérdésre"
+          name={`${index}`}
+          type="text"
+          onChange={e => onChangeInput(e, qType)}
+          className="form-control"
+        />
+      );
     } else {
       questionComp = children.answerOpts.map((answer, ind) => (
         <div key={ind}>
-          <label>{answer}</label>
           <input name={`${index}`} type={qType} onChange={e => onChangeInput(e, qType)} value={answer} />
+          <label>{answer}</label>
         </div>
       ));
     }
@@ -128,7 +160,7 @@ class Question extends Component {
       <div className="question-block card-block">
         {`${index + 1}. `}
         {children.title}
-        {questionComp}
+        <div className="question-submit-option">{questionComp}</div>
       </div>
     );
   }
