@@ -9,6 +9,7 @@ import SubjectList from './SubjectList';
 import QuestionnaireMaker from './QuestionnaireMaker';
 import Form from './Questionnaire/Form';
 import Welcome from './Welcome';
+import Register from '../screens/Register';
 import { List as QuestionnaireList } from './Questionnaire/List';
 
 class App extends Component {
@@ -24,7 +25,7 @@ class App extends Component {
             <Switch>
               <Route exact path="/" component={Welcome} />
               <Route path="/login" component={Login} />
-
+              <Route path="/register" component={Register} />
               <Route path="/tema-lista" component={SubjectList} />
               <Route path="/kerdoiv-lista/:subject" component={QuestionnaireList} />
               <Route path="/kerdoiv-keszites" component={QuestionnaireMaker} />

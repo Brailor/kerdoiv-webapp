@@ -34,6 +34,8 @@ export const Login = {
   sendCredentials: user => API.post('login', user)
 };
 
+export const register = newUser => API.post('register', newUser);
+
 export const Questionnaire = {
   getAll: () => API.get('questionnaires'),
   getById: id => API.get('questionnaire', { id }),
