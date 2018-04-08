@@ -1,6 +1,6 @@
 import React from 'react';
 import { register } from '../middleware/index';
-
+import history from '../util/history';
 class Register extends React.Component {
   state = {
     error: ''
@@ -15,7 +15,13 @@ class Register extends React.Component {
       this.setState({ error: 'Valamilyen adat hiányzik, vagy nem egyeznek meg a jelszavak!' });
       return;
     }
-    register({ username, password });
+    register({ username, password })
+      .then(res => {
+        if (res) {
+          history.push('/login');
+        }
+      })
+      .catch(e => console.log(e));
   }
   render() {
     return (
@@ -60,7 +66,7 @@ class Register extends React.Component {
               <div className="login-errorbox">{this.state.error}</div>
               <div className="button-bar">
                 <button onClick={() => this.onClickSend()} className="btn btn-success login-button">
-                  Bejelentkezés
+                  Regisztráció
                 </button>
               </div>
             </div>

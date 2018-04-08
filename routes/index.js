@@ -55,14 +55,14 @@ module.exports = app => {
 
   app.post('/api/create-questionnaire', authMW, async (req, res) => {
     // TODO: Validáció kell ide !!!!
-
     const { subject } = req.body.body;
-    debugger;
 
     const questionnaire = await questionnaireService.createQuestionnaire(req.body.body, req.user.get('id'));
     if (subject) {
       const [subjectModel] = await subjectService.findBySubject(subject);
       if (subjectModel) questionnaire.subject = subjectModel.id;
+      debugger;
+      const count = subjectModel.get('activeQuestionnaires');
     }
 
     const newQuestionnaire = await questionnaire.save();
@@ -102,7 +102,7 @@ module.exports = app => {
   });
 
   app.post('/api/register', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password } = req.body.body;
     const user = userService.createUser({ username, password });
 
     const newUser = await user.save();
